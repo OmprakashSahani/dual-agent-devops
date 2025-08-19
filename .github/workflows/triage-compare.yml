@@ -1,4 +1,4 @@
-name: Triage Compare (OpenAI vs Gemini)
+name: Triage & Review Compare (OpenAI vs Gemini)
 
 on:
   pull_request:
@@ -33,7 +33,15 @@ jobs:
           . .venv/bin/activate
           bin/run_triage_all.sh
 
-      - name: Upload summaries
+      - name: Run review comparison
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          . .venv/bin/activate
+          bin/run_review_all.sh
+
+      - name: Upload triage summaries
         uses: actions/upload-artifact@v4
         with:
           name: triage-summaries
@@ -41,8 +49,17 @@ jobs:
             results/summaries/triage_metrics.csv
             results/summaries/triage_compare.md
 
+      - name: Upload review summaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-summaries
+          path: |
+            results/summaries/review_metrics.csv
+            results/summaries/review_compare.md
+
       - name: Upload raw outputs
         uses: actions/upload-artifact@v4
         with:
-          name: triage-raw
-          path: results/raw/**
+          name: raw-outputs
+          path: |
+            results/raw/**
