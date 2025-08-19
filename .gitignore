@@ -29,3 +29,4 @@ datasets/issues/*.md
 
 # Keep empty dirs
 !.keep
+!datasets/issues/ci_*.md
