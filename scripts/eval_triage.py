@@ -1,5 +1,5 @@
-import csv, json, subprocess, time, glob, pathlib, sys
-from datetime import datetime
+import csv, json, subprocess, time, glob, pathlib
+from datetime import datetime, timezone
 
 ROOT = pathlib.Path(".")
 ISSUES = sorted(glob.glob("datasets/issues/*.md"))
@@ -7,7 +7,7 @@ OUTCSV = ROOT / "results/summaries/triage_metrics.csv"
 OUTCSV.parent.mkdir(parents=True, exist_ok=True)
 
 rows = []
-ts = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+ts = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 def run(cmd):
     t0 = time.time()
@@ -35,6 +35,7 @@ for issue in ISSUES:
         "timestamp_utc": ts,
         "issue": stem,
         "stack": "openai",
+        "status": "ok",
         "latency_s": latency,
         "labels": ",".join(o.get("labels", [])),
         "priority": o.get("priority", ""),
@@ -50,11 +51,11 @@ for issue in ISSUES:
     gem_out = f"results/raw/gemini/triage/{stem}.out.json"
     gem_api = f"results/raw/gemini/triage/{stem}.api.json"
     g = read_json(gem_out)
-    # token usage is not always available; leave blank if missing
     rows.append({
         "timestamp_utc": ts,
         "issue": stem,
         "stack": "gemini",
+        "status": g.get("status","ok"),
         "latency_s": latency,
         "labels": ",".join(g.get("labels", [])),
         "priority": g.get("priority", ""),
@@ -65,8 +66,7 @@ for issue in ISSUES:
         "out_path": gem_out,
     })
 
-# Write CSV
-fieldnames = ["timestamp_utc","issue","stack","latency_s","labels","priority","rationale_len","tokens_in","tokens_out","model","out_path"]
+fieldnames = ["timestamp_utc","issue","stack","status","latency_s","labels","priority","rationale_len","tokens_in","tokens_out","model","out_path"]
 with open(OUTCSV, "w", newline="", encoding="utf-8") as f:
     w = csv.DictWriter(f, fieldnames=fieldnames)
     w.writeheader()
