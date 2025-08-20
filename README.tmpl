@@ -1,5 +1,5 @@
 # Dual-Agent DevOps: Gemini vs OpenAI
-[![CI](https://github.com/OmprakashSahani/dual-agent-devops/actions/workflows/triage-compare.yml/badge.svg?branch=main)](https://github.com/OmprakashSahani/dual-agent-devops/actions/workflows/triage-compare.yml)
+%BADGE%
 
 A reproducible benchmark comparing **Google Gemini (SDK)** and **OpenAI (CLI/SDK)** on developer tasks:
 
@@ -92,16 +92,11 @@ latency_s, lines, chars
 Results (latest run)
 Triage (OpenAI vs Gemini)
 
-| issue | labels_openai | labels_gemini | jaccard | prio(O) | prio(G) | Δprio | faster | speedup |
-|---|---|---|---:|---:|---:|---:|---|---:|
-| 001_missing_validation | `bug, security, validation` | `` | 0.000 | 1 | 3 | 2 | openai | 1.61 |
-| ci_negative_qty | `bug, validation, API` | `` | 0.000 | 1 | 3 | 2 | openai | 2.11 |
+%TRIAGE_TABLE%
 
 Review (OpenAI vs Gemini)
 
-| diff | faster | speedup | rubric(O) | rubric(G) | Δrubric | major(O) | major(G) | tests(O) | tests(G) |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| ci_001 | openai | 1.35 | 6 | 6 | 0 | 2 | 1 | 2 | 3 |
+%REVIEW_TABLE%
 Repro tips
 
 Pin versions in CI for strict reproducibility.
